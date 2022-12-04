@@ -322,7 +322,18 @@ public class NewOutgoingCallIntentBroadcaster {
     }
 
     private String getNumberFromCallIntent(Intent intent) {
-        String number;
+        String number = null;
+
+        Uri uri = intent.getData();
+        if (uri != null) {
+            String scheme = uri.getScheme();
+            if (scheme != null) {
+                if (scheme.equals("tel") || scheme.equals("sip")) {
+                    number = uri.getSchemeSpecificPart();
+                }
+            }
+        }
+
         number = mPhoneNumberUtilsAdapter.getNumberFromIntent(intent, mContext);
         boolean isConferenceUri = intent.getBooleanExtra(
                 TelephonyProperties.EXTRA_DIAL_CONFERENCE_URI, false);
